@@ -1,0 +1,7 @@
+#pragma message("#KB_COLEMAK_DH")
+static const char* const MEMCLASS KB_COLEMAK_DH_NAME = "ColemakDH"; 
+static const uint8_t MEMCLASS KB_COLEMAK_DH[] = TRANSKEYCODE_DEF( \
+    Q,W,F,P,B, J,L,U   ,Y  ,MINS  ,\
+    A,R,S,T,G, K,N,E   ,I  ,O     ,\
+    Z,X,C,D,V, M,H,COMM,DOT,SLSH  );
+

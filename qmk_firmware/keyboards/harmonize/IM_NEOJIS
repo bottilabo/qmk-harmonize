@@ -1,0 +1,9 @@
+#pragma message("#IM_NEOJIS")
+
+#include "IM_NEOJIS.c"
+
+im_plug_t IM_NEOJIS_PLUG = {
+    IM_NEOJIS_enable,
+    process_NEOJIS
+};
+

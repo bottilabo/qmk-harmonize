@@ -1,0 +1,9 @@
+#pragma message("#IM_KM")
+
+#include "IM_KM.c"
+
+im_plug_t IM_KM_PLUG = {
+    IM_KM_enable,
+    process_KM
+};
+

@@ -1,0 +1,8 @@
+#pragma message("#IM_IROHAZAKA")
+
+#include "IM_IROHAZAKA.c"
+
+im_plug_t IM_IROHAZAKA_PLUG = {
+    IM_IROHAZAKA_enable,
+    process_IROHAZAKA
+};

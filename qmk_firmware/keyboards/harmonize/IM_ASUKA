@@ -1,0 +1,8 @@
+#pragma message("#IM_ASUKA")
+
+#include "IM_ASUKA.c"
+
+im_plug_t IM_ASUKA_PLUG = {
+    IM_ASUKA_enable,
+    process_ASUKA
+};

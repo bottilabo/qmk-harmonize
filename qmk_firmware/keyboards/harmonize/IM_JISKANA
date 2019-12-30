@@ -1,0 +1,8 @@
+#pragma message("#IM_JISKANA")
+
+#include "IM_JISKANA.c"
+
+im_plug_t IM_JISKANA_PLUG = {
+    IM_JISKANA_enable,
+    process_JISKANA
+};

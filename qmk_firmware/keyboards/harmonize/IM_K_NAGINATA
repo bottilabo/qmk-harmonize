@@ -1,0 +1,7 @@
+#pragma message("#IM_K_NAGINATA")
+#include "IM_K_NAGINATA.c"
+
+im_plug_t IM_K_NAGINATA_PLUG = {
+    IM_K_NAGINATA_enable,
+    process_K_NAGINATA
+};
