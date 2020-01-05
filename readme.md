@@ -1,17 +1,18 @@
 # QMK Harmonizeライブラリ
 
-Copyright 2019 Bottilabo [twitter @bottilabo]
+Copyright 2019-2020 Bottilabo [twitter @bottilabo]
                          [https://github.com/bottilabo/qmk]
 
 QMK Harmonizeライブラリは、
-一つの仮想的なキーボードの定義から各キーボードに配列をマッピングさせることにより、仮想キーボードの定義を変更するだけで、対応するすべてのキーボードの配列を同じように変更することができます。
-QMKを使った一般的なキーボードであれば、簡単に組み込むことができます。
-仮想キーボードの配列をベースにして、コンパイル時にキー配列を最大３種類、日本語入力モードを最大３種類設定し、動作時に切り替えることができます。
-日本語入力モードのかな配列では、PCへのキー出力を「かな」もしくは「ローマ字」のどちらかを動作中に変更できます。
+- 一つの仮想的なキーボードの定義から各キーボードに配列をマッピングさせることにより、仮想キーボードの定義を変更するだけで、対応するすべてのキーボードの配列を同じように変更することができます。
+- QMKを使った一般的なキーボードであれば、簡単に組み込むことができます。
+- 仮想キーボードの配列をベースにして、コンパイル時にキー配列を最大３種類、日本語入力モードを最大３種類設定し、動作時に切り替えることができます。
+- 日本語入力モードのかな配列では、PCへのキー出力を「かな」もしくは「ローマ字」のどちらかを動作中に変更できます。
+
 
 # 仮想キーボード
-デフォルトのKBD_HARMONIZE　を　KBD_USER　のようにコピーして修正してください。
-新しく作った仮想キーボードの配列はビルド時に　-DKBD=KBD_USER　のように指定してください。
+デフォルトのKBD_HARMONIZE　を　KBD_USER　のようにコピーして修正してください。  
+新しく作った仮想キーボードの配列はビルド時に　-DKBD=KBD_USER　のように指定してください。  
 
 
 
@@ -50,12 +51,20 @@ qmk-harmonize/qmk_firmware_bmp/keyboards　を　qmk_firmware_bmp/keyboards　�
 make crkbd:harmonize-crkbd EXTRAFLAGS='-DKBD=KBD_HARMONIZE -DKBLAYOUT1=KB_COLEMAK -DKBLAYOUT2=KB_DVORAK -DKBLAYOUT3=KB_MSIKI -DKBIM1=IM_ROMAJI_COLEMAK -DKBIM2=IM_TRON -DKBIM3=IM_SINJIS'
 ```
 
-例のようにKBLAYOUT1-3 KBIM1-3に使用したい配列、日本語入力モードを指定してください。
-ProMicroは容量が少ないため、日本語入力モードを複数入れることができないことがあります。
-容量が足りない場合は、次のように必要なものだけ指定してビルドします。
+例のようにKBLAYOUT1-3 KBIM1-3に使用したい配列、日本語入力モードを指定してください。  
+ProMicroは容量が少ないため、日本語入力モードを複数入れることができないことがあります。  
+容量が足りない場合は、次のように必要なものだけ指定してビルドします。  
 ```
 make crkbd:harmonize-crkbd EXTRAFLAGS='-DKBD=KBD_HARMONIZE -DKBLAYOUT1=KB_COLEMAK -DKBIM1=IM_ROMAJI_COLEMAK'
 ```
+
+## 容量削減
+
+```
+-DNO_KANA
+```
+かなキーでの出力を無効にし、ローマ字でのみの出力にして使用する容量を削減します
+。
 
 # 作成済みのキー配列
 
@@ -96,6 +105,12 @@ make crkbd:harmonize-crkbd EXTRAFLAGS='-DKBD=KBD_HARMONIZE -DKBLAYOUT1=KB_COLEMA
 - KM式
 - Ｍ式
 - ローマ字colemak
+
+# コンパイル済みファームウェア
+
+- [crkbd_colemak_dvorak_nicola.hex](precompiled/crkbd_colemak_dvorak_nicola.hex)  
+`make crkbd:harmonize-crkbd EXTRAFLAGS='-DNO_KANA -DKBLAYOUT1=KB_COLEMAK -DKBLAYOUT2=KB_DVORAK -DKBIM1=IM_NICOLA'`
+
 
 # License
 　特にこだわりはないのでとりあえずGPLにしました。

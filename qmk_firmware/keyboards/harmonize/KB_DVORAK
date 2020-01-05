@@ -1,5 +1,6 @@
 #pragma message("#KB_DVORAK")
-static const char* const MEMCLASS KB_DVORAK_NAME = "Dvorak"; 
+
+#define KB_DVORAK_NAME "Dvorak" 
 static const uint8_t MEMCLASS KB_DVORAK[] = TRANSKEYCODE_DEF( \
     SLSH,COMM,DOT ,P,Y, F,G,C,R,L ,\
     A   ,O   ,E   ,U,I, D,H,T,N,S ,\

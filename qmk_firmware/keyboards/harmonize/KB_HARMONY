@@ -1,5 +1,6 @@
 #pragma message("#KB_HARMONY")
-static const char* const MEMCLASS KB_HARMONY_NAME = "Harmony"; 
+
+#define KB_HARMONY_NAME "Harmony" 
 static const uint8_t MEMCLASS KB_HARMONY[] = TRANSKEYCODE_DEF( \
     Q,W,M,L,F, P,U,O,G,Y, \
     D,S,T,N,R, V,I,E,A,H, \

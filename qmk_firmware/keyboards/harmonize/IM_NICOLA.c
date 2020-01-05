@@ -88,7 +88,7 @@ void IM_NICOLA_enable(uint8_t modef)
     );
     IM_KANA_BASE_enable(modef);
     transkeycode_set(NULL,"Nicola");
-    _kana_base.moratorium_term = 0;
+    _kana_base.moratorium_term = (MORATORIUM_TERM == 0) ? 0 : STKIN_TERM;
 }
 
 bool process_NICOLA(uint16_t keycode, keyrecord_t *record) {

@@ -4,13 +4,14 @@
 
 //#define _STR(X) #X
 //#define INCLUDEFILE(STR) _STR(STR)
-//#define _CONCAT(X,Y) #X #Y
+#define _CONCATTKN(X,Y) X##Y
+#define CONCATTKN(X,Y) _CONCATTKN(X,Y)
 //#define ADDNAME(STR) _CONCAT(STR,_NAME)
 #ifdef KBLAYOUT1
     #define KBLAYOUT1S INCLUDEFILE(KBLAYOUT1)
     #include KBLAYOUT1S
     #define KBLAYOUT1_ ,KBLAYOUT1
-    #define KBLAYOUT1_NAME ,ADDNAME(KBLAYOUT1)
+    #define KBLAYOUT1_NAME ,CONCATTKN(KBLAYOUT1,_NAME)
 #else
     #define KBLAYOUT1_ 
     #define KBLAYOUT1_NAME
@@ -20,7 +21,7 @@
     #define KBLAYOUT2S INCLUDEFILE(KBLAYOUT2)
     #include KBLAYOUT2S
     #define KBLAYOUT2_ ,KBLAYOUT2
-    #define KBLAYOUT2_NAME ,ADDNAME(KBLAYOUT2)
+    #define KBLAYOUT2_NAME ,CONCATTKN(KBLAYOUT2,_NAME)
 #else
     #define KBLAYOUT2_ 
     #define KBLAYOUT2_NAME
@@ -30,7 +31,7 @@
     #define KBLAYOUT3S INCLUDEFILE(KBLAYOUT3)
     #include KBLAYOUT3S
     #define KBLAYOUT3_ ,KBLAYOUT3
-    #define KBLAYOUT3_NAME ,ADDNAME(KBLAYOUT3)
+    #define KBLAYOUT3_NAME ,CONCATTKN(KBLAYOUT3,_NAME)
 #else
     #define KBLAYOUT3_ 
     #define KBLAYOUT3_NAME
@@ -60,8 +61,6 @@ typedef struct _transkeycode_t
 static transkeycode_t _transkeycode;
 
 
-static uint8_t klid = 1;
-
 static const uint8_t *const kbls[] = {base_qwerty KBLAYOUT1_     KBLAYOUT2_     KBLAYOUT3_      };
 static const char *const kbnames[] = {"QWERTY"    KBLAYOUT1_NAME KBLAYOUT2_NAME KBLAYOUT3_NAME };
 
@@ -77,7 +76,7 @@ void transkeycode_set(const uint8_t* layout,const char* name) {
 }
 
 void transkeycode_reset(void) {
-    //transkeycode_set( pgm_read_ptr( &kbls[klid] ),pgm_read_ptr(&kbnames[klid]) );
+    uint8_t klid = _harmonize.kb_layout_id;
     transkeycode_set( kbls[klid],kbnames[klid] );
 }
 
@@ -86,11 +85,12 @@ const char* get_kb_layout(void) {
 }
 
 void select_kb_layout(uint8_t id) {
-    klid = id;
+    uint8_t klid = id;
     if( klid >= sizeof(kbls)/sizeof(uint8_t*) )
         klid = 0;
 
     TRANSKEYCODE_ON_CHANGE_KB_LAYOUT(klid,kbnames[klid]);
+    _harmonize.kb_layout_id = klid;
 }
 
 

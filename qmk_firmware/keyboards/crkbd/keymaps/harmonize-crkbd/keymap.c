@@ -1,34 +1,4 @@
-#undef SSD1306OLED
-
-
-
 #include QMK_KEYBOARD_H
-#include "bootloader.h"
-#ifdef PROTOCOL_LUFA
-  #include "lufa.h"
-  #include "split_util.h"
-#endif
-#ifdef SSD1306OLED
-  #include "ssd1306.h"
-  #include "glcdfont.c"
-#endif
-
-
-//#define USE_KEYLOG
-//#define USE_LAYER_STATE
-//#define USE_LOGO
-
-
-
-extern keymap_config_t keymap_config;
-
-#ifdef RGBLIGHT_ENABLE
-//Following line allows macro to read current RGB settings
-extern rgblight_config_t rgblight_config;
-#endif
-
-extern uint8_t is_master;
-
 
 #define HAS_THUMBROW
 
@@ -57,8 +27,15 @@ LGUI, L25, L24, L23, L22, L21,                     R21, R22, R23, R24, R25,  ADJ
 
 #include "../../../harmonize/harmonize.h"
 
-void on_change_kb_layout(uint8_t id,const char* name) {
-}
+
+
+
+#ifdef RGBLIGHT_ENABLE
+//Following line allows macro to read current RGB settings
+extern rgblight_config_t rgblight_config;
+#endif
+
+extern uint8_t is_master;
 
 
 int RGB_current_mode;
@@ -85,16 +62,6 @@ void matrix_init_user(void) {
     #ifdef SSD1306OLED
         iota_gfx_init(!has_usb());   // turns on the display
     #endif
-    
-    //
-    // Always init to default keyboard layout
-    //
-    if (!eeconfig_is_enabled()) {
-        eeconfig_init();
-    }
-    //eeconfig_read_keymap()
-    persistent_default_layer_set(0);
-
     harmonize_init();
 }
 
@@ -121,42 +88,24 @@ void matrix_scan_user(void) {
 void matrix_render_user(struct CharacterMatrix *matrix) {
   if (is_master) {
     // If you want to change the display of OLED, you need to change here
-    matrix_write(matrix,"layout: ");
-    matrix_write_ln(matrix,get_kb_layout());
-
-#ifdef USE_LAYER_STATE
-    matrix_write_ln(matrix, read_layer_state());
-#endif
-
-#ifdef ROMAJIEX
-#pragma message "** keymay ROMAJIEX **"
-//    {
-//        char* strROMAJI = "ROMAJI mode";
-//        itoa(timer_read())
-//        matrix_write_ln(matrix,strROMAJI);
-//    }
-    if( is_romaji_mode() )
-    {
-        static const char* strROMAJI = "ROMAJI mode";
-        matrix_write_ln(matrix,strROMAJI);
+    matrix_write(matrix,"mode: ");
+    matrix_write_ln(matrix, get_kb_layout());
+    const char* p;
+    switch(_harmonize.os_type) {
+        case OS_WIN:p="Windows";break;
+        case OS_MAC:p="Mac";break;
+        default:p="Linux";break;
     }
-    else {
-        static const char* strROMAJI = "normal mode";
-        matrix_write_ln(matrix,strROMAJI);
-    }
-#endif
+    matrix_write_ln(matrix, p);
 
-#ifdef USE_KEYLOG
-    matrix_write_ln(matrix, read_keylog());
-#endif
+    //matrix_write_ln(matrix, read_layer_state());
+    //matrix_write_ln(matrix, read_keylog());
     //matrix_write_ln(matrix, read_keylogs());
     //matrix_write_ln(matrix, read_mode_icon(keymap_config.swap_lalt_lgui));
     //matrix_write_ln(matrix, read_host_led_state());
     //matrix_write_ln(matrix, read_timelog());
   } else {
-#ifdef USE_LOGO
-        matrix_write(matrix, read_logo());
-#endif
+    matrix_write(matrix, read_logo());
   }
 }
 
@@ -173,29 +122,36 @@ void iota_gfx_task_user(void) {
   matrix_render_user(&matrix);
   matrix_update(&display, &matrix);
 }
-
-#endif
-
-
-#define CHANGE_LAYOUT(X)    \
-    case X:\
-      if (record->event.pressed) {\
-        persistent_default_layer_set(1UL<<_##X);\
-      }\
-      return false;\
-      break;
+#endif//SSD1306OLED
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-#ifdef SSD1306OLED
   if (record->event.pressed) {
-#ifdef USE_KEYLOG
+#ifdef SSD1306OLED
     set_keylog(keycode, record);
 #endif
     // set_timelog();
   }
-#endif
 
-    HARMONIZE_PROC_RECORD_USER;
-    return true;
+  switch (keycode) {
+    case RGB_MOD:
+      #ifdef RGBLIGHT_ENABLE
+        if (record->event.pressed) {
+          rgblight_mode(RGB_current_mode);
+          rgblight_step();
+          RGB_current_mode = rgblight_config.mode;
+        }
+      #endif
+      return false;
+    case RGBRST:
+      #ifdef RGBLIGHT_ENABLE
+        if (record->event.pressed) {
+          eeconfig_update_rgblight_default();
+          rgblight_enable();
+          RGB_current_mode = rgblight_config.mode;
+        }
+      #endif
+      break;
+  }
+  HARMONIZE_PROC_RECORD_USER;
+  return true;
 }
-

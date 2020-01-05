@@ -10,8 +10,11 @@ bool DEFAULTIM_PROC(uint16_t keycode, keyrecord_t *record)
 }
 static im_plug_t DEFAULTIM_PLUG = {DEFAULTIM_enable,DEFAULTIM_PROC};
 Harmonize_t _harmonize = {
-    &DEFAULTIM_PLUG,250,0,0
+    &DEFAULTIM_PLUG,250,OS_WIN,0,0,0,0,0
 };
+
+
+#include "transkeycode.c"
 
 
 #define _ADD_PLUG(X) X ## _PLUG
@@ -44,7 +47,11 @@ Harmonize_t _harmonize = {
     #define KBIM3_PLUG DEFAULTIM_PLUG
 #endif
 
-
+typedef union
+{
+    uint32_t u32;
+    uint8_t u8[4];
+} u32bytes_t;
 
 
 const im_plug_p im_plugins[IM_MAX_PLUG] = {&DEFAULTIM_PLUG,&KBIM1_PLUG,&KBIM2_PLUG,&KBIM3_PLUG};
@@ -76,32 +83,34 @@ void im_on_off(uint32_t modef) {
     im_enable(modef);
 }
 
-void im_mode_key(uint8_t modef,bool push)
-{
-
-#ifndef IMKEY_AAAAAA
-    if(push) {
-        SEND_STRING(SS_LALT("`"));
-    }
-#else
-    uint16_t kc = KC_LANG1;
-    if( modef == false ) {
-        kc = KC_LANG2;
-    }
-
-    if(push) {
-        register_code(kc);
-    } else {
-        unregister_code(kc);
-    }
-#endif
-
-}
-
 static void keyonoff(bool on,uint16_t kc)
 {
     if(on) register_code(kc);
     else   unregister_code(kc);
+}
+
+void im_mode_key(uint8_t modef,bool push)
+{
+
+    switch( _harmonize.os_type )
+    {
+        case OS_WIN:
+            if(push) {
+                SEND_STRING(SS_LALT("`"));
+            }
+        break;
+
+        default:
+        {
+            uint16_t kc = KC_LANG2;
+            if( modef ) {
+                kc = KC_LANG1;
+            }
+            keyonoff(push,kc);
+        }
+        break;
+
+    }
 }
 
 static inline bool is_lc_mode(void)
@@ -122,6 +131,28 @@ void init_state(void) {
 	layer_on(0);
 	im_on_off(false);
 }
+
+void harmonize_save(void) {
+    u32bytes_t dat;
+    dat.u8[0] = _harmonize.os_type;
+    dat.u8[1] = _harmonize.kb_layout_id;
+    dat.u8[2] = _harmonize.im_id;
+    dat.u8[3] = _harmonize.type_mode;
+    eeconfig_update_user( dat.u32);
+}
+void harmonize_load(void) {
+    u32bytes_t dat;
+    dat.u32 = eeconfig_read_user();
+    _harmonize.os_type = dat.u8[0];
+    _harmonize.kb_layout_id = dat.u8[1];
+    _harmonize.im_id = dat.u8[2];
+    _harmonize.type_mode = dat.u8[3];
+    im_select(_harmonize.im_id);
+    select_kb_layout(dat.u8[1]);
+    im_on_off(false);
+}
+
+
 
 bool hamromize_process_record_user(uint16_t keycode, keyrecord_t *record) {
     bool pressed = record->event.pressed;
@@ -174,12 +205,6 @@ bool hamromize_process_record_user(uint16_t keycode, keyrecord_t *record) {
 					im_mode_key(false,false);
 					im_on_off(false);
 					return true;
-				}
-				break;
-
-			case 7:
-				if( _xkey.last_released_key == KC_ESC ) {
-					reset_keyboard();
 				}
 				break;
 		}
@@ -245,7 +270,8 @@ bool hamromize_process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
     case K_IM_JP:
     case K_IM_EN:
-        im_enable( keycode  == K_IM_JP );
+        modef = (keycode  == K_IM_JP);
+        im_enable( modef );
         im_mode_key( modef,record->event.pressed);
         break;
 
@@ -278,6 +304,12 @@ bool hamromize_process_record_user(uint16_t keycode, keyrecord_t *record) {
         select_kb_layout(keycode - K_KB_0);
         break;
 
+    case K_WIN:
+    case K_MAC:
+    case K_LNX:
+        _harmonize.os_type = keycode - K_WIN;
+        break;
+
 	case K_REPRT:
 		send_string( get_kb_layout() );
         break;
@@ -286,12 +318,14 @@ bool hamromize_process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   im_on_off(  _harmonize.im_enabled );
+  harmonize_save();
   return false;
 }
 
 void harmonize_init(void)
 {
     harmonize_reset();
+    harmonize_load();
     _harmonize.im_p =  &KBIM1_PLUG;
 }
 

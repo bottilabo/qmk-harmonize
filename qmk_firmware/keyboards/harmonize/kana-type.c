@@ -2,6 +2,48 @@
 #include "keymap_jp.h"
 #include "kana-type.h"
 
+static inline bool send_key(uint16_t code) {
+    if( code == 0 )
+        return false;
+    register_code16( code );
+    unregister_code16( code );
+    return true;
+}
+static inline void send_key2(uint16_t code,uint16_t mod) {
+    register_code16( mod );
+    register_code16( code );
+    unregister_code16( code );
+    unregister_code16( mod );
+}
+
+static bool send_romaji_kigou(uint16_t code) {
+    switch(code) {
+        case KANA_BSPC: send_key(KC_BSPC);return true;
+        case KANA_QSTN: send_key2(KC_SLSH,KC_LSFT);return true;
+        case KANA_EXCL: send_key2(KC_1,KC_LSFT);return true;
+        case KANA_ZENHAN: send_key(JP_ZHTG); return true;
+        case KANA_EISU: send_key(KC_LANG2); return true;
+        case KANA_MHEN: send_key(JP_MHEN); return true;
+        case KANA_HENK: send_key(JP_HENK); return true;
+        case KANA_KANA: send_key(JP_KANA); return true;
+        case KANA_DOU: send_string("DOU"); return true;
+
+    }
+    return false;
+}
+
+#ifndef NO_KANA 
+
+static bool send_kana_kigou(uint16_t code) {
+    switch(code) {
+        case KANA_BSPC: send_key(KC_BSPC);return true;
+        case KANA_QSTN: send_key2(KC_SLSH,KC_LSFT);send_key(KC_F9);return true;
+        case KANA_EXCL: send_key2(KC_1,KC_LSFT);send_key(KC_F9);return true;
+    }
+    return send_romaji_kigou(code);
+}
+
+
 //
 // KANA
 //
@@ -62,20 +104,6 @@ static const uint16_t MEMCLASS KANA_YOUON_TBL[] = {
     LSFT(KC_7),LSFT(KC_8),LSFT(KC_9),
 };
 
-static inline bool send_key(uint16_t code) {
-    if( code == 0 )
-        return false;
-    register_code16( code );
-    unregister_code16( code );
-    return true;
-}
-static inline void send_key2(uint16_t code,uint16_t mod) {
-    register_code16( mod );
-    register_code16( code );
-    unregister_code16( code );
-    unregister_code16( mod );
-}
-
 static bool send_kana(const uint16_t* tbl,uint8_t idx) {
     return send_key( mem_read_word(tbl,idx) );
 }
@@ -87,31 +115,6 @@ static bool send_youon_key(KANA_t kch) {
     return send_kana( KANA_YOUON_TBL, code);
 }
 
-
-static bool send_romaji_kigou(uint16_t code) {
-    switch(code) {
-        case KANA_BSPC: send_key(KC_BSPC);return true;
-        case KANA_QSTN: send_key2(KC_SLSH,KC_LSFT);return true;
-        case KANA_EXCL: send_key2(KC_1,KC_LSFT);return true;
-        case KANA_ZENHAN: send_key(JP_ZHTG); return true;
-        case KANA_EISU: send_key(KC_LANG2); return true;
-        case KANA_MHEN: send_key(JP_MHEN); return true;
-        case KANA_HENK: send_key(JP_HENK); return true;
-        case KANA_KANA: send_key(JP_KANA); return true;
-        case KANA_DOU: send_string("DOU"); return true;
-
-    }
-    return false;
-}
-
-static bool send_kana_kigou(uint16_t code) {
-    switch(code) {
-        case KANA_BSPC: send_key(KC_BSPC);return true;
-        case KANA_QSTN: send_key2(KC_SLSH,KC_LSFT);send_key(KC_F9);return true;
-        case KANA_EXCL: send_key2(KC_1,KC_LSFT);send_key(KC_F9);return true;
-    }
-    return send_romaji_kigou(code);
-}
 
 bool type_kana(KANA_t kch) {
     bool typed = false;
@@ -132,6 +135,10 @@ bool type_kana(KANA_t kch) {
             return typed;
     }
 }
+
+#else
+    #define type_kana type_romaji
+#endif
 
 //
 // Romaji

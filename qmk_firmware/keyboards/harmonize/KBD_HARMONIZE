@@ -114,7 +114,8 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 #endif
 
 #ifndef KC_R2_RH5
-#define KC_R2_RH5 KC_INT6,KC_INT7,KC_INT8,KC_INT9,_______
+//#define KC_R2_RH5 KC_INT6,KC_INT7,KC_INT8,KC_INT9,_______
+#define KC_R2_RH5 KC_LANG1,KC_LANG2,KC_LANG3,KC_LANG4,KC_LANG5
 #endif
 
 
@@ -270,9 +271,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|-------+-------+-------+-------+-------+-------+                    +-------+-------+-------+-------+-------+-------|
      RESET  ,RESET  ,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,                     XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,
   //|-------+-------+-------+-------+-------+-------+                    +-------+-------+-------+-------+-------+-------|
-     RESET  ,RESET  ,XXXXXXX,XXXXXXX,K_VOLUM,K_REPRT,                     XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,
+     RESET  ,RESET  ,XXXXXXX,XXXXXXX,K_TKANA,K_TROMJ,                       K_LNX,  K_WIN,  K_MAC,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,
   //|-------+-------+-------+-------+-------+-------+                    +-------+-------+-------+-------+-------+-------|
-     _______,K_ENKB ,K_IM_3 ,K_IM_2 ,K_IM_1 ,K_IM_0 ,                     K_TKANA,K_TROMJ,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,
+     _______,K_ENKB ,K_IM_3 ,K_IM_2 ,K_IM_1 ,K_IM_0 ,                      RGBRST, RGBMOD,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,
   //|-------+-------+-------+-------+-------+-------+                    +-------+-------+-------+-------+-------+-------|
      _______,K_JPKB ,K_KB_3 ,K_KB_2 ,K_KB_1 ,K_KB_0 ,                     XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,XXXXXXX,
   //|-------+-------+-------+-------+-------+-------+                    +-------+-------+-------+-------+-------+-------|

@@ -1,5 +1,6 @@
 #pragma message("#KB_NORMAN")
-static const char* const MEMCLASS KB_NORMAN_NAME = "Norman"; 
+
+#define KB_NORMAN_NAME "Norman"
 static const uint8_t MEMCLASS KB_NORMAN[] = TRANSKEYCODE_DEF( \
     Q   ,W,D,F,K, J,U,R   ,L  ,MINS ,\
     A   ,S,E,T,G, Y,N,I   ,O  ,H    ,\

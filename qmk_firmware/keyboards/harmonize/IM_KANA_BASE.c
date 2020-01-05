@@ -162,9 +162,9 @@ static bool kana_base_type(void) {
     kana = _kana_base.key_kana(_kana_base.press|_kana_base.pressing,_kana_base.keycode);
 
     // 同時押しの濁音、半濁音処理
-    if(_kana_base.press&KANA_BASE_DAKU)
+    if( (_kana_base.press&KANA_BASE_DAKU) || (_kana_base.pressing&KANA_BASE_DAKU) )
         kana |= KANA_daku;
-    else if(_kana_base.press&KANA_BASE_HNDK)
+    else if( (_kana_base.press&KANA_BASE_HNDK) || (_kana_base.press&KANA_BASE_HNDK) ) 
         kana |= KANA_hndk;
 
     bool lsp = (_kana_base.press & KANA_BASE_LSHIFT) && (_kana_base.released & KANA_BASE_LSHIFT);

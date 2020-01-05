@@ -95,8 +95,11 @@ enum harmonix_keycodes {
   K_IM_1,
   K_IM_2,
   K_IM_3,
-  K_MTFLT,
+  K_WIN,
+  K_MAC,
+  K_LNX,
   RGBRST,
+  RGBMOD,
   _USERKEY,
 };
 
@@ -108,6 +111,13 @@ enum harmonix_keycodes {
 #define KC_DECR KC_KP_MINUS
 
 #define IM_MAX_PLUG 4
+
+
+enum {
+    OS_WIN,
+    OS_MAC,
+    OS_LNX,
+};
 
 typedef struct {
     void (*enable)(uint8_t modef);
@@ -121,9 +131,12 @@ typedef struct _Harmonize_t
 
     uint16_t dbltap_term;
 
+    uint8_t os_type;
     uint8_t lc_mode;
     uint8_t im_enabled;
     uint8_t type_mode; // 0:romaji 1:kana
+    uint8_t kb_layout_id; 
+    uint8_t im_id; 
 } Harmonize_t;
 
 
@@ -151,7 +164,6 @@ uint16_t elapsed_time(uint16_t a,uint16_t b) {
 
 
 
-#include "transkeycode.c"
 bool is_im_enabled(void);
 void im_select(uint8_t imid);
 void im_mode_key(uint8_t modef,bool push);
