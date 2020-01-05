@@ -45,7 +45,6 @@ uint16_t keymap_key_to_keycode(uint8_t layer, keypos_t key)
 
 qmk-harmonize/qmk_firmware_bmp/keyboards　を　qmk_firmware_bmp/keyboards　にマージ／上書きコピーしてください。
 
-
 # ビルド方法
 ```
 make crkbd:harmonize-crkbd EXTRAFLAGS='-DKBD=KBD_HARMONIZE -DKBLAYOUT1=KB_COLEMAK -DKBLAYOUT2=KB_DVORAK -DKBLAYOUT3=KB_MSIKI -DKBIM1=IM_ROMAJI_COLEMAK -DKBIM2=IM_TRON -DKBIM3=IM_SINJIS'
@@ -105,6 +104,58 @@ make crkbd:harmonize-crkbd EXTRAFLAGS='-DKBD=KBD_HARMONIZE -DKBLAYOUT1=KB_COLEMA
 - KM式
 - Ｍ式
 - ローマ字colemak
+
+# keymap.cへの追加方法
+- 仮想キーボードからのマッピング定義
+- harmonizeライブラリの読み込み
+- matrix_init_userへの追加
+- matrix_scan_userへの追加
+- process_record_userへの追加
+が必要です。
+
+## keymap.c 例
+```
+#include QMK_KEYBOARD_H
+
+#define HAS_THUMBROW
+
+//      +    +    +    *                                 *    +    +    +
+//4     4    3    2    1    1      1              1      1    1    2    3    4      4
+#define LAYOUT_remapper( \
+ESC ,   NL5, NL4, NL3, NL2, NL1,              NR1, NR2, NR3, NR4, NR5,   NR6, NR7, BSPC,  \
+TAB ,   L05, L04, L03, L02, L01,              R01, R02, R03, R04, R05,   R06, R07, BSLS,   \
+CAPS,   L15, L14, L13, L12, L11,              R11, R12, R13, R14, R15,   R16, R17, ENTR,  \
+LSFT,   L25, L24, L23, L22, L21,              R21, R22, R23, R24, R25,   R26,      RSFT,  \
+MOUS,  LCTL,LALT,LGUI,                                            RGUI,RALT,RCTL,   ADJ, \
+                       TL2,                                   TR2,                       \
+       PGUP,                TL1,                         TR1,                UP,         \
+HOME,  PGDN,END ,                  TL0,           TR0,                 LEFT,DOWN,  RIGT, \
+INS ,DEL   ,PRNT,BRK,                                                ZENHN,KANA,MHEN,HENK  \
+  ) \
+  LAYOUT( \
+ESC , L05, L04, L03, L02, L01,                     R01, R02, R03, R04, R05, R06,BSPC, \
+CAPS, L15, L14, L13, L12, L11,                     R11, R12, R13, R14, R15, ENTR , \
+LCTL, L24, L23, L22, L21, L25,                     R21, R22, R23, R24, R25, ADJ, \
+        LGUI ,TL1   ,      TL0,   TR0,              TR1,RCTL,RALT  \
+    )
+#define LAYOUT_DEF(...)                  LAYOUT_remapper(__VA_ARGS__)
+
+#include "../../../harmonize/harmonize.h"
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  HARMONIZE_PROC_RECORD_USER;
+  return true;
+}
+void matrix_init_user(void) {
+    harmonize_init();
+}
+void matrix_scan_user(void) {
+   HARMONIZE_MATRIX_SCAN_USER;
+}
+
+```
+
+
 
 # コンパイル済みファームウェア
 
