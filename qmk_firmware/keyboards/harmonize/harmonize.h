@@ -40,6 +40,9 @@
 #define MORATORIUM_TERM 0
 #endif
 
+#ifndef TICKMS
+#define TICKMS 1
+#endif
 
 #ifndef KOP_SFT
   #define KOP_SFT KC_LSFT

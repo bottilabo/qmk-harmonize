@@ -34,14 +34,14 @@
 typedef struct _kana_base_t {
     volatile bool mode;
     uint16_t press_cnt;
-    uint16_t moratorium_term;
+    int16_t  moratorium_term;
     uint16_t time_max;
     uint16_t time_start;
     uint16_t keycode;
     uint16_t press;
     uint16_t pressing;
     uint16_t released;
-    uint16_t moratorium;
+    int16_t  moratorium;
     KANA_t   type_buf;
 
     uint16_t (*key_bit)(uint16_t keycode);
@@ -238,8 +238,8 @@ static bool kana_base_key(uint16_t keycode,bool pressed) {
 bool process_kana_base(uint16_t keycode, keyrecord_t *record) {
     if( is_kana_base_mode() ) {
         if(_kana_base.moratorium) {
-            _kana_base.moratorium--;
-            if(_kana_base.moratorium==0) {
+            _kana_base.moratorium-=TICKMS;
+            if(_kana_base.moratorium<=0) {
                 kana_base_type_buf(KANA_max);
             }
         }

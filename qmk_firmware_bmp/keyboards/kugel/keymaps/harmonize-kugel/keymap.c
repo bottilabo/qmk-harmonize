@@ -50,6 +50,9 @@ enum custom_keycodes {
   K_IM_1,
   K_IM_2,
   K_IM_3,
+  K_WIN,
+  K_MAC,
+  K_LNX
 };
 
 const key_string_map_t custom_keys_user = {.start_kc = K_XRESET, .end_kc = K_IM_3, .key_strings = 
@@ -78,12 +81,16 @@ const key_string_map_t custom_keys_user = {.start_kc = K_XRESET, .end_kc = K_IM_
 "K_IM_1\0"
 "K_IM_2\0"
 "K_IM_3\0"
+"K_WIN\0"
+"K_MAC\0"
+"K_LNX\0"
 "\0"};
 
 const uint16_t keymaps[][MATRIX_ROWS][MATRIX_COLS] = {KC_NO};
 
 uint32_t keymaps_len() { return 43; }
 
+#define TICKMS 10
 #define KBD KBD_NONE
 #define HARMONIZE_KEYCODES
 #define HAS_THUMBROW
