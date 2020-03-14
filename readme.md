@@ -166,7 +166,7 @@ void matrix_scan_user(void) {
 `make numatreus:harmonize-numatreus EXTRAFLAGS='-DNO_KANA -DKBLAYOUT1=KB_COLEMAK -DKBLAYOUT2=KB_DVORAK -DKBIM1=IM_NICOLA'`
 
 - [projectkb_alice_harmonize-colemak_dvorak_nicola.bin](precompiled/projectkb_alice_harmonize-colemak_dvorak_nicola.bin)  
-`make projectkb_alice:harmonize-alice EXTRAFLAGS='-DNO_KANA -DKBLAYOUT1=KB_COLEMAK -DKBLAYOUT2=KB_DVORAK -DKBIM1=IM_NICOLA'`
+`make projectkb/alice:harmonize-alice:flash EXTRAFLAGS='-DNO_KANA -DKBLAYOUT1=KB_COLEMAK -DKBLAYOUT2=KB_DVORAK -DKBIM1=IM_NICOLA'`
 
 - [kugel_harmonize-colemak_dvorak_nicola.uf2](precompiled/kugel_harmonize-colemak_dvorak_nicola.uf2)  
 `make kugel:harmonize-kugel:uf2 EXTRAFLAGS='-DNO_KANA -DKBLAYOUT1=KB_COLEMAK -DKBLAYOUT2=KB_DVORAK -DKBIM1=IM_NICOLA'`
